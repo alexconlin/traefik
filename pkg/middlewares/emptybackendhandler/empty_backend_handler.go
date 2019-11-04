@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/containous/traefik/v2/pkg/healthcheck"
+	"github.com/containous/traefik/v2/pkg/log"
 )
 
 // EmptyBackend is a middleware that checks whether the current Backend
@@ -15,12 +16,16 @@ type emptyBackend struct {
 
 // New creates a new EmptyBackend middleware.
 func New(lb healthcheck.BalancerHandler) http.Handler {
+        log.WithoutContext().Debug("alex: Creating middleware EmptyBackend")
+
 	return &emptyBackend{next: lb}
 }
 
 // ServeHTTP responds with 503 when there is no active Server and otherwise
 // invokes the next handler in the middleware chain.
 func (e *emptyBackend) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+        log.WithoutContext().Debugf("alex: e.next.Servers(): %s", e.next.Servers())
+
 	if len(e.next.Servers()) == 0 {
 		rw.WriteHeader(http.StatusServiceUnavailable)
 		_, err := rw.Write([]byte(http.StatusText(http.StatusServiceUnavailable)))

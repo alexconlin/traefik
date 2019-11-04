@@ -248,6 +248,8 @@ func loadService(client Client, namespace string, backend v1beta1.IngressBackend
 			}
 
 			for _, addr := range subset.Addresses {
+                                log.WithoutContext().Debugf("alex: appending new server with url [%s://%s:%d]", protocol, addr.IP, port)
+
 				servers = append(servers, dynamic.Server{
 					URL: fmt.Sprintf("%s://%s:%d", protocol, addr.IP, port),
 				})
